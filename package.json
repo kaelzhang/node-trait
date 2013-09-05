@@ -22,7 +22,8 @@
   "bugs": {
     "url": "https://github.com/kaelzhang/trait/issues"
   },
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
     "chai": "~1.7.2"
   }
 }

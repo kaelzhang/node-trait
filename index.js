@@ -135,10 +135,10 @@ Attributes.prototype = {
     enumerable: function () {
         var attrs = this.__attrs;
 
-        this.key_list.filter(function (key) {
+        return this.key_list.filter(function (key) {
             var attr = attrs[key];
 
-            return attrs.enumerable ||
+            return attr.enumerable ||
                 // Or not specified (default to true)
                 !('enumerable' in attr)
         });
@@ -147,7 +147,7 @@ Attributes.prototype = {
     writable: function () {
         var attrs = this.__attrs;
 
-        this.key_list.filter(function (key) {
+        return this.key_list.filter(function (key) {
             var attr = attrs[key];
 
             return (
@@ -155,7 +155,7 @@ Attributes.prototype = {
                     !('writable' in attr) 
                 ) && (
                     // `true`
-                    attrs.enumerable ||
+                    attr.enumerable ||
                     // Or not specified (default to true)
                     !('enumerable' in attr)
                 );
