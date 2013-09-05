@@ -26,24 +26,7 @@ function Attributes(attrs, options) {
     for(key in attrs){
         this.add(key, attrs[key]);
     }
-};
-
-
-function get_values(attrs) {
-    var ret = {};
-    var key;
-    var attr;
-
-    for(key in attrs){
-        attr = attrs[key];
-        if('value' in attr){
-            ret[key] = attr.value;
-        }
-    }
-
-    return;
 }
-
 
 var TYPES = {
     path: {
@@ -52,7 +35,7 @@ var TYPES = {
         },
 
         setter: function (v) {
-            return path.resolve( String(v) );
+            return node_path.resolve( String(v) );
         }
     },
 
@@ -120,18 +103,29 @@ Attributes.prototype = {
 
     // Reset to default value.
     // Run this method will execute setup methods
-    reset: function () {
-        // reset all values, including non-enumerable and readonly properties
-        this.key_list.forEach(function (key) {
-            this.unset(key);
-        }, this);
+    reset: function (key) {
+        if(arguments.length === 0){
+            // reset all values, including non-enumerable and readonly properties
+            this.key_list.forEach(function (key) {
+                this._reset(key);
+            }, this);
+        
+        }else{
+            this._reset(key);
+        }
     },
 
     // Force to unsetting a value by key,
     // use this method carefully.
-    unset: function (key) {
-        attr = attr || this.__attrs[key];
+    _reset: function (key) {
+        var attr = this.__attrs[key];
+
+        if(!attr){
+            return;
+        }
+
         var value = attr.value = attr._origin;
+        var setup = attr.type.setup; 
 
         if(setup){
             setup.call(this.host, value, key, this);
@@ -171,90 +165,68 @@ Attributes.prototype = {
     // @param {boolean=} ghost, ghost set, skip validation
     _set: function (key, value, ghost) {
         var attr = this.__attrs[key];
-        var status = {
-            err: true
-        };
+        var is_success = false;
 
+        // for inner use
         if(ghost){
             attr.value = value;
             return;
         }
 
         if(!attr){
-            return status;
+            return is_success;
         }
 
         // `attr.writable` is `true` by default
         if(!attr.writable && 'writable' in attr){
-            return status;
+            return is_success;
         }
 
         // reset error status
-        this.error(null);
-        delete status.err;
+        delete this._err;
 
         var validator = attr.type.validator;
 
         if(!validator || validator.call(this.host, value, key, this)){
 
             // validator returns true, but there might be error messages
-            if( !(status.err = this._get_err()) ){
+            if( is_success = !this._err ){
                 var setter = attr.type.setter;
+
                 if(setter){
                     value = setter.call(this.host, value, key, this);
+
+                    is_success = !this._err;
                 }
-
-                status.err = this._get_err();
             }
-
-        }else{
-            // validation fail
-            status.err = this._get_err() || true;
         }
 
-        if(!status.err){
+        if(is_success){
             attr.value = value;
         }
 
-        return status;
+        return is_success;
     },
 
     set: function (key, value) {
         if(Object(key) === key){
             var list = key;
-            var err;
+            var is_success = true;
             var errors = {};
             var result;
 
             for(key in list){
                 value = list[key];
-                var result = this._set(key, value);
-
-                if(result.err){
-                    err = true;
-                    errors[key] = result.err;
-                }
+                is_success = this._set(key, value) && is_success;
             }
 
-            if(err){
-                return {
-                    err: true,
-                    errors: errors
-                }
-            }else{
-                return {};
-            }
+            return is_success;
 
         }else if(typeof key === 'string'){
-            var data = {};
-            data[key] = value;
-
-            return this.set(data);
+            return this._set(key, value);
 
         }else{
-            return {
-                err: true
-            }
+            return false;
         }
     },
 
@@ -262,7 +234,7 @@ Attributes.prototype = {
     // - value: {mixed} default value
     // - type:
     add: function (key, attr) {
-        if(key in this.__attrs){ 
+        if(key in this.__attrs){
             return;
         }
 
@@ -285,17 +257,13 @@ Attributes.prototype = {
         attr.type = type;
 
         this.__attrs[key] = attr;
-        this.unset(key);
+        this.reset(key);
 
         return true;
     },
 
-    error: function (info) {
-        this._err = info;
-    },
-
-    _get_err: function () {
-        return this._err;  
+    error: function () {
+        this._err = true;
     }
 };
 
