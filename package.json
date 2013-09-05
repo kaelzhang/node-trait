@@ -1,6 +1,6 @@
 {
   "name": "trait",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Trait is a smart attribute manager. Not traits in ruby, just because good names are already taken and even not used.",
   "main": "index.js",
   "scripts": {
