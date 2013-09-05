@@ -150,15 +150,8 @@ Attributes.prototype = {
         return this.key_list.filter(function (key) {
             var attr = attrs[key];
 
-            return (
-                    attr.writable ||
-                    !('writable' in attr) 
-                ) && (
-                    // `true`
-                    attr.enumerable ||
-                    // Or not specified (default to true)
-                    !('enumerable' in attr)
-                );
+            return attr.writable ||
+                !('writable' in attr)
         });
     },
 
@@ -199,6 +192,9 @@ Attributes.prototype = {
                     is_success = !this._err;
                 }
             }
+        // validator returns false
+        }else{
+            is_success = false;
         }
 
         if(is_success){
