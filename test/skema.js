@@ -1,9 +1,9 @@
 'use strict';
 
 var expect = require('chai').expect;
-var trait = require('../index');
+var skema = require('../index');
 
-var attr = trait({
+var attr = skema({
     a: {
         type: 'string'
     },

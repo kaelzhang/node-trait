@@ -1,17 +1,17 @@
-# Trait
+# Skema
 
-Trait is a smart attribute manager. 
+Skema is a smart attribute manager. 
 
-Not traits in ruby, just because good names are already taken and even not used ╮(╯﹏╰)╭.
+Not skemas in ruby, just because good names are already taken and even not used ╮(╯﹏╰)╭.
 
 ## Installation
 
-	npm install trait --save
+	npm install skema --save
 	
 ## Usage
 
 ```js
-var trait = require('trait');
+var skema = require('skema');
 ```
 
 
@@ -33,6 +33,6 @@ var trait = require('trait');
 
 ### .add()
 
-### trait(attrs, options)
+### skema(attrs, options)
 
-### new trait.Trait(attrs, options)
+### new skema.Skema(attrs, options)

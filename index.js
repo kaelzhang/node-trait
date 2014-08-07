@@ -1,20 +1,20 @@
 'use strict';
 
-module.exports = trait;
-trait.Trait = Attributes;
+module.exports = skema;
+skema.Skema = Skema;
 
 var node_path = require('path');
 var node_url = require('url');
 
-function trait (attrs, options){
-    return new Attributes(attrs, options);
+function skema (attrs, options){
+    return new Skema(attrs, options);
 };
 
 
 // @param {Object} attrs list of attr(see `this.add`)
 // @param {Object} options
 // - host: {Object} host object
-function Attributes(attrs, options) {
+function Skema(attrs, options) {
     options = options || {};
     this.host = options.context || this;
     this.__attrs = {};
@@ -58,17 +58,17 @@ var TYPES = {
 });
 
 
-// Object.defineProperties(Attributes, 'TYPES', {
+// Object.defineProperties(Skema, 'TYPES', {
 //     value: TYPES
 // });
 
-Attributes.TYPES = TYPES;
+Skema.TYPES = TYPES;
 
 // TODO
 // [Array, Function, ].
 
 
-Attributes.prototype = {
+Skema.prototype = {
     _get: function (key) {
         var attr = this.__attrs[key];
 
@@ -242,7 +242,7 @@ Attributes.prototype = {
         var type = attr.type || {};
 
         if(typeof type === 'string'){
-            type = Attributes.TYPES[type];
+            type = Skema.TYPES[type];
         }
 
         if(Object(type) !== type){
@@ -262,10 +262,3 @@ Attributes.prototype = {
         this._err = true;
     }
 };
-
-
-// Prevents from deleting properties
-Object.seal(Attributes.TYPES);
-
-// Prevents any extensions
-Object.preventExtensions(Attributes.TYPES);
