@@ -4,7 +4,7 @@
   "description": "Skema is a smart attribute manager. Not skemas in ruby, just because good names are already taken and even not used.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "./node_modules/.bin/mocha --reporter spec ./test/*.js"
   },
   "repository": {
     "type": "git",
@@ -24,6 +24,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "chai": "~1.7.2"
+    "chai": "*",
+    "mocha": "*"
   }
 }
